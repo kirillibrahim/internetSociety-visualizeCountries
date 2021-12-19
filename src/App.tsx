@@ -1,24 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
+import { fetchCountriesData } from './constants/APIs/Countries';
+import WorldMap from 'react-svg-worldmap';
 import './App.css';
 
-function App() {
+const App = () => {  
+  const [content, setContent] = useState([]);
+  useEffect(() => {
+    async function fetchInt() {
+        let fetchInfoCoun = await fetchCountriesData();  
+        //console.log(fetchInfoCoun);
+        let dataChart = fetchInfoCoun.countries.map((item: any) => {  
+          
+         return {country: item.alpha_2, value: item.count}; 
+        
+      });
+       // console.log(dataChart);
+        setContent(dataChart);
+    }
+      fetchInt();
+  }, []);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <WorldMap
+        color="red"
+        title="Summary of countries"
+        value-suffix="people"
+        size="lg"
+        data={content}
+      />
     </div>
   );
 }
